@@ -1,0 +1,16 @@
+{
+  "extends": [
+    "development"
+  ],
+  "hints": {
+    "axe/name-role-value": "off",
+    "no-inline-styles": "off",
+    "axe/aria": [
+      "default",
+      {
+        "aria-command-name": "off"
+      }
+    ],
+    "typescript-config/consistent-casing": "off"
+  }
+}

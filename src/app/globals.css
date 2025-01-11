@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;      
+@tailwind utilities; 
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --mainground: #4461f2;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background-color: #fbf9f9;
+}
+
+.sign-nav-list .active {
+  color: #4461F2;
+  padding: 6px 15px;
+  border-radius: 12px;
+  box-shadow: 0 2px 15px -4px rgba(0, 0, 0, 0.1);
+  border: 1px solid #bbbbbb;
+}
+
+.continue-with::after,
+.continue-with::before {
+  content: "";
+  background-color: #e7e7e7;
+  height: 1px;
+  width: 125px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.continue-with::after {
+  left: 100%;
+}
+
+.continue-with::before {
+  right: 100%;
+}
+
+/****************************/
+ input[type="radio"] {
+   -webkit-appearance: none; 
+   -moz-appearance: none;
+   appearance: none;
+  border: 1px solid var(--mainground);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  outline: none;
+  cursor: pointer;
+  background-color: #EDEFF3;
+}
+
+input[type="radio"]:checked {
+  background-color: var(--mainground);
+  outline: 2px solid  var(--mainground);
+}
+
+input[type="radio"].incorrect {
+  background-color: #CC1010 !important;
+  border: 1px solid #CC1010; 
+  outline: 2px solid #CC1010 !important;
+}
+
+
+
