@@ -4,7 +4,7 @@ import Link from "next/link";
 import InputField from "../../../components/ui/InputField";
 import IdentityProviders from "../components/identity-providers";
 import Welcome from "../components/welcome-part";
-import SignNavList from "../components/navigation";
+import SignNavList from "../components/loggin-nav-links";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useFormik } from "formik";
@@ -123,7 +123,7 @@ export default function LoginPage() {
                   <LoadingSpinner/>
                 </button>
               : 
-                <SubmitButton title={"Create an Account"}/>
+                <SubmitButton title={"Sign in"}/>
               }
 
             </form>

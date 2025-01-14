@@ -1,44 +1,63 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 
 import Link from "next/link";
-import InputField from "../../../components/ui/InputField";
-import IdentityProviders from "../components/identity-providers";
-import Welcome from "../components/welcome-part";
-import SignNavList from "../components/navigation";
-import SubmitButton from "../../../Components/SubmitButton";
+import InputField from "../../../../components/ui/InputField";
+import IdentityProviders from "../../components/identity-providers";
+import Welcome from "../../components/welcome-part";
+import SignNavList from "../../components/loggin-nav-links";
 import { useState } from "react";
 import { useFormik } from "formik";
-import { resetPasswordValues } from "../../../lib/customs/customTypes";
-import { useRouter } from "next/navigation";
-import { resetPasswordSchema } from "../../../lib/Schemas/auth.schema";
-import axios from "axios";
+import { resetPasswordSchema } from "../../../../lib/Schemas/auth.schema";
+import SubmitButton from "@/components/ui/SubmitButton";
+import LoadingSpinner from "@/components/common/loading-spinner";
+import { resetPasswordAction } from "../_actions/reset-password.action";
 
 
-export default function ResetPasswordPage() {
+export default function ResetPasswordForm() {
 
-  const router = useRouter();
-  const [isError, setIsError] = useState(false);
-  const [errorMsg, setErrorMsg] = useState(false);
+  // States
+  const [error, setError] = useState<string | null>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hidePassword, setHidePassword] = useState<boolean>(true);
   const [hideRePassword, setHideRePassword] = useState<boolean>(true);
 
-  const handleSubmit = async (values: resetPasswordValues) => {
+
+  // Reset Password Handler Function
+  const handleSubmit = async (fields: resetPasswordValues) => {
+
+    setIsLoading(true);
 
     const resetData = {
       email: localStorage.getItem('user') ? localStorage.getItem('user') : '',
-      newPassword: values.newPassword,
+      newPassword: fields.newPassword,
+    }
+
+    const payload = await resetPasswordAction(resetData);
+
+    try {
+
+      if (payload.message === 'success' && payload.token) {
+        window.location.href = '/auth/login';
+      } 
+      
+      else { 
+          const msg = payload.message || 'Faild to fetch data';
+          setError(msg);
+      }
+
     }
     
-    axios.put('https://exam.elevateegy.com/api/v1/auth/resetPassword', resetData)
-    .then(res => {
-        router.push('/login')
-    })
-    .catch(err => {
-        const msg = err.response.data.message
-         setIsError(true);
-        setErrorMsg(msg === 'reset code not verified' ? 'reset code has expired' :  msg);
-    })
+    catch (err) {
+      if (err) {
+        console.error("Error Message: ", error);
+        throw new Error('Something went wrong, Try again')
+      }
+    }
+
+    finally {
+      setIsLoading(false);
+    }
+    
 
   }
 
@@ -73,10 +92,7 @@ export default function ResetPasswordPage() {
             </h1>
 
             <form className="space-y-4 md:space-y-7" onSubmit={formik.handleSubmit} >
-
-              {isError && <div className="p-3 text-center text-sm text-red-600 bg-red-100 rounded-md transition-all">{errorMsg}</div>  
-              }
-
+              {/* New Password Field */}
               <div className="new-password-input relative">
                 <InputField 
                 type={hidePassword ? "password" : "text"} 
@@ -84,10 +100,10 @@ export default function ResetPasswordPage() {
                 handleChange={formik.handleChange} 
                 handleBlur={formik.handleBlur} 
                 placeholder="Create Password"
-                customStyles={`${formik.errors.newPassword && formik.touched.newPassword || isError ? 'border-red-500' : ''}`} />
+                customStyles={`${formik.errors.newPassword && formik.touched.newPassword || error ? 'border-red-500' : ''}`} />
 
 
-                <span className="absolute top-1/2 translate-y-[-50%] right-3 text-gray-500 cursor-pointer">
+                <span className="absolute top-3 right-3 text-gray-500 cursor-pointer">
                   {
                   hidePassword ? 
                   <i className="fa-regular fa-eye" onClick={() => setHidePassword(false)}></i> :
@@ -99,6 +115,7 @@ export default function ResetPasswordPage() {
                 }
               </div>
 
+              {/* Re-Password Field */}
               <div className="Repassword-input relative">
                 <InputField 
                 type={hideRePassword ? "password" : "text"}  
@@ -106,7 +123,7 @@ export default function ResetPasswordPage() {
                 handleChange={formik.handleChange} 
                 handleBlur={formik.handleBlur} 
                 placeholder="Re-enter Password"
-                customStyles={`${formik.errors.rePassword && formik.touched.rePassword || isError ? 'border-red-500' : ''}`} />
+                customStyles={`${formik.errors.rePassword && formik.touched.rePassword || error ? 'border-red-500' : ''}`} />
 
                 <span className="absolute top-3 right-3 text-gray-500 cursor-pointer">
                   {
@@ -124,7 +141,18 @@ export default function ResetPasswordPage() {
                 <Link href="/forget-password" className="text-blue-800">Recover Password ?</Link>
               </div>
 
-              <SubmitButton title={"Sign in"} />
+              {/* Error Feedback Message */}
+              {error && <div className="text-center text-sm text-red-600  transition-all">{error}</div>  
+              }
+
+              {/* Submit Button */}
+              {isLoading ? 
+                <button type="submit" className="w-full flex justify-center items-center text-white bg-blue-700 outline-none font-medium rounded-2xl text-[15px] px-5 py-3 text-center">
+                  <LoadingSpinner/>
+                </button>
+              : 
+                <SubmitButton title={"Reset"}/>
+              }
 
             </form>
           </div>
@@ -133,7 +161,7 @@ export default function ResetPasswordPage() {
       <p className="max-w-md mx-auto text-[15px] text-[#6c737f] text-center relative">
         <span className="continue-with px-1 relative">Or Continue with</span>
       </p>
-
+        {/* Sign In With Identity Providers */}
         <IdentityProviders/>
 
       </div>

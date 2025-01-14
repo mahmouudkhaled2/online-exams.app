@@ -2,6 +2,7 @@
 import Image from 'next/image'
 import Logo from '@/../public/assets/images/Final Logo.png'
 import Link from 'next/link'
+import LogoutButton from '@/components/ui/logout-btn'
 
 
 export default function Sidebar() {
@@ -24,10 +25,7 @@ export default function Sidebar() {
 
         </ul>
 
-        <div className="flex gap-10  items-center py-1 px-3 mt-10 text-xl font-semibold text-sub-color">
-          <i className="fa-solid fa-right-from-bracket rotate-180 text-main"></i>
-          <button >Logout</button>
-        </div>
+        <LogoutButton />
     </aside>
   )
 }

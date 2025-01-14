@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useFormik } from "formik";
 import { useRouter } from "next/navigation";
 import Welcome from "../components/welcome-part";
-import SignNavList from "../components/navigation";
+import SignNavList from "../components/loggin-nav-links";
 import InputField from "../../../components/ui/InputField";
 import IdentityProviders from "../components/identity-providers";
 import { signUpSchema } from "../../../lib/Schemas/auth.schema";
